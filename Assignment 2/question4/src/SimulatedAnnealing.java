@@ -13,7 +13,7 @@ public class SimulatedAnnealing {
         double temperature = startingTemperature;
         travel.generateCities();
 
-        City startingDepot = new City("0",0, 0);
+        City startingDepot = new City("1",39, 19, 0);
         double bestDistance = travel.getDistance(startingDepot);
         System.out.println("Initial distance: " + bestDistance);
 
@@ -37,7 +37,7 @@ public class SimulatedAnnealing {
                 continue;
             }
 
-            if (i % 5 == 0) {
+            if (i % 50 == 0) {
                 System.out.println("Iteration #" + i + ", current temp: " + String.format("%.03f", temperature) + " current best distance of: " + bestDistance);
             }
         }

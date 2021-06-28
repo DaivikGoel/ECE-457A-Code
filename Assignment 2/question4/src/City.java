@@ -2,6 +2,7 @@ public class City {
 
     private int x;
     private int y;
+    private int serviceTime;
     private String name;
 
     public City() {
@@ -9,10 +10,11 @@ public class City {
         this.y = (int) (Math.random() * 500);
     }
 
-    public City(String city_name, int _x, int _y) {
+    public City(String city_name, int _x, int _y, int _serviceTime) {
         this.x = _x;
         this.y = _y;
         this.name = city_name;
+        this.serviceTime = _serviceTime;
     }
 
     public void setX(int x) {
@@ -29,6 +31,7 @@ public class City {
     public int getY() {
         return y;
     }
+    public int getServiceTime() { return serviceTime; }
 
     public double distanceToCity(City city) {
         int x = Math.abs(getX() - city.getX());
