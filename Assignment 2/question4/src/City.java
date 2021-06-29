@@ -38,4 +38,14 @@ public class City {
         int y = Math.abs(getY() - city.getY());
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
+
+    /* returns current city's serviceTime + travelTime to next city */
+    public double totalTimeToNextCity(City city, int speed) throws Exception {
+        if (speed == 0) throw new Exception("speed can't be zero");
+
+        double distance = distanceToCity(city);
+        double travelTime = distance / speed;
+
+        return travelTime + getServiceTime();
+    }
 }

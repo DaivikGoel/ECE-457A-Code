@@ -2,29 +2,28 @@ import java.util.*;
 
 public class main {
 
+    // both distance and time optimizations are done with one vehicle.
     public static void main(String[] args) {
         System.out.println("running question 4");
-/*
-        location[] cities = {
-                new location(2, 2, "1"),
-                new location(-2, 3, "2"),
-                new location(2, 4, "3"),
-                new location(4, 0, "4"),
-                new location(0, -2, "5")
-        };
-        int[][] cities = {{2,2}, {-2,3}, {2,4}, {4,0}, {0, -2}};
-        int[] depotCoord = {0, 0};
-        List<int[]> ordering = assignCitiesToTrucks(cities, depotCoord, 2);
-        ordering.forEach(array -> System.out.println(Arrays.toString(array)));
-*/
 
-        int iterations = 10000, startingTemp = 10;
+        int iterations = 10000, startingTemp = 15;
         double coolingRate = 0.9995;
         System.out.println(
-            "Optimized distance of: " + SimulatedAnnealing.SA(25, 10000, 0.9995));
+            "Optimized distance of: " + SimulatedAnnealing.SADistance(25, 11000, 0.9994));
+
+        try {
+            System.out.println(
+                    "Optimized Time of: " + SimulatedAnnealing.SATimeSpent(70, 40000, 0.9992, 70));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private static List<int[]> assignCitiesToTrucks(int[][] cities, int[] depotCoord, int numTrucks) {
+
+
+
+    //not used:
+/*    private static List<int[]> assignCitiesToTrucks(int[][] cities, int[] depotCoord, int numTrucks) {
         int depotX = depotCoord[0], depotY = depotCoord[1];
 
         List<int[]> list = new ArrayList<>();
@@ -42,5 +41,5 @@ public class main {
         }
 
         return list;
-    }
+    }*/
 }

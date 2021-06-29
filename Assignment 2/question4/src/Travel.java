@@ -1,12 +1,10 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
 public class Travel {
-
-    private ArrayList<City> travel = new ArrayList<>();
-    private ArrayList<City> previousTravel = new ArrayList<>();
+    private ArrayList<City> travel = new ArrayList();
+    private ArrayList<City> previousTravel = new ArrayList();
 
     public Travel(int numberOfCities) {
         for (int i = 0; i < numberOfCities; i++) {
@@ -14,6 +12,7 @@ public class Travel {
         }
     }
 
+    //using the demand section as service time
     public Travel() {
         City[] cities = {
             new City("2", 79, 19, 18),
@@ -86,20 +85,41 @@ public class Travel {
         return travel.get(index);
     }
 
-    public int getDistance(City... startingDepot) {
+    public int getDistance(City endingDepot, City... startingCity) {
         int distance = 0;
+        for (int index = 0; index < travel.size(); index++) {
+
+            //startingCity is only used once at the very beginning to start from the depot
+            City starting = startingCity == null ? getCity(index) : startingCity[0];
+            startingCity = null;
+
+            City destination;
+            if (index + 1 < travel.size())
+                destination = getCity(index + 1);
+            else
+                destination = endingDepot;
+
+            distance += starting.distanceToCity(destination);
+        }
+        return distance;
+    }
+
+    public int getTime(int speed, City endingDepot, City... startingDepot) throws Exception {
+        int totalTime = 0;
+
         for (int index = 0; index < travel.size(); index++) {
             City starting = startingDepot == null ? getCity(index) : startingDepot[0];
             startingDepot = null;
 
             City destination;
-            if (index + 1 < travel.size()) {
+            if (index + 1 < travel.size())
                 destination = getCity(index + 1);
-            } else {
-                destination = getCity(0);
-            }
-            distance += starting.distanceToCity(destination);
+             else
+                destination = endingDepot;
+
+            totalTime += starting.totalTimeToNextCity(destination, speed);
         }
-        return distance;
+
+        return totalTime;
     }
 }
