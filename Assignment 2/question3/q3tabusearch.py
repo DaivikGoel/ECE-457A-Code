@@ -195,6 +195,7 @@ def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
         plt.show()   
 
     elif experiment =='5':
+        runcosts = []
         print("ASPIRATION/FREQUENCY CRITERIA")
         for i in range(20):
             print ("RUN NUMBER: ", i)
