@@ -66,19 +66,16 @@ def swap_and_test(layout, initcost, tabu_list, tabu_tenure, typeof):
                                 bestfoundcost = newcost
                                 bestlayout = newlayout
                                 haschanged = True
-        if haschanged == True: 
-            add_to_tabu_list(bestlayout, bestfoundcost, tabu_list, tabu_tenure, typeof)
+    if haschanged == True: 
+        add_to_tabu_list(bestlayout, bestfoundcost, tabu_list, tabu_tenure, typeof)
     return bestfoundcost, bestlayout 
 
 
 def add_to_tabu_list(newlayout, newcost, tabu_list, tabu_tenure, typeof):
     
     tabu_list.append((newcost,newlayout))
-    if typeof == "ASPIRATION":
+    if typeof == "ASPIRATION" or typeof == "ASPIRATION/FREQUENCY":
         tabu_list = sorted(tabu_list, key=lambda x: x[0], reverse=True)
-    if typeof == "ASPIRATION/FREQUENCY":
-        tabu_list = sorted(tabu_list, key=lambda x: x[0], reverse=True)
-    
     if len(tabu_list) >= tabu_tenure:
         while len(tabu_list) != tabu_tenure:
             tabu_list.pop(0)
