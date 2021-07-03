@@ -13,12 +13,13 @@ def tabusearch(initiallayout, distancearray, flowarray, tabu_matrix, tabu_tenure
     cost = search_cost(layout)
     tabu_list = []
     iterations = 0
-    
+    #stopping criterion
     while cost > 2570 and iterations < 1000:
         iterations += 1
+        #making dynamic list size for tabu
         if typeof == "DYNAMIC" and iterations % 45 == 0:
             tabu_tenure = random.randint(1, 300)
-
+        #using highest scored layout as layout to test
         if typeof == "ASPIRATION/FREQUENCY" and iterations > 250 == 0 and len(tabu_list) > 0:
             layout = tabu_list[0]
 
@@ -31,7 +32,7 @@ def tabusearch(initiallayout, distancearray, flowarray, tabu_matrix, tabu_tenure
 
     
 def search_cost(layout):
-    
+    #determines cost of the layout
     searchcost= 0
     layout = list(layout.flatten())
     for x in range(20):
@@ -44,6 +45,7 @@ def swap_and_test(layout, initcost, tabu_list, tabu_tenure, typeof):
     bestfoundcost = initcost
     bestlayout = layout.copy()
     haschanged = False
+    #swap neighbours
     for x in range(4):
         for y in range(3):
             #Can change range of neighbourhood below by changing value of i and j
@@ -60,21 +62,22 @@ def swap_and_test(layout, initcost, tabu_list, tabu_tenure, typeof):
                             if (item[1] == newlayout).all() and repeated == False:
                                 repeated = True
                                 break
-                        
                         if len(tabu_list) == 0 or repeated == False:  
                             if newcost < bestfoundcost:
                                 bestfoundcost = newcost
                                 bestlayout = newlayout
                                 haschanged = True
+    #if the layout is new and not saved in tabu list
     if haschanged == True: 
         add_to_tabu_list(bestlayout, bestfoundcost, tabu_list, tabu_tenure, typeof)
     return bestfoundcost, bestlayout 
 
 
 def add_to_tabu_list(newlayout, newcost, tabu_list, tabu_tenure, typeof):
-    
+   #add to tabu list 
     tabu_list.append((newcost,newlayout))
     if typeof == "ASPIRATION" or typeof == "ASPIRATION/FREQUENCY":
+        #sort tabu list based on if we have aspiration criteria
         tabu_list = sorted(tabu_list, key=lambda x: x[0], reverse=True)
     if len(tabu_list) >= tabu_tenure:
         while len(tabu_list) != tabu_tenure:
@@ -83,6 +86,7 @@ def add_to_tabu_list(newlayout, newcost, tabu_list, tabu_tenure, typeof):
         
 
 def create_random_matrix():
+    #craete random matrix and layout
     import random
     initiallayout = np.zeros(shape=(4,5))
 
@@ -100,6 +104,7 @@ def create_random_matrix():
         
         
 def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
+    #choose which experiment you want
     experiment = input("Please put number of experiment: ")
     if experiment == '0':
         initialayout = create_random_matrix()
@@ -107,7 +112,7 @@ def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
 
 
     elif experiment == '1':
-
+        #run the experiment 20 times and plot
 
         runcosts = []
         for i in range(20):
@@ -125,6 +130,7 @@ def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
 
 
     elif experiment == '2':
+        #run the experiment for each size
         tabu_sizes = []
         best_cost = []
         initialayout = create_random_matrix()
@@ -160,6 +166,7 @@ def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
         plt.show()
 
     elif experiment =='3':
+        #run the experiment 20 times and plot
         initialayout = create_random_matrix()
         print("DYNAMIC TABU")
         runcosts = []
@@ -176,6 +183,7 @@ def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
         plt.show()   
 
     elif experiment =='4':
+        #run the experiment 20 times and plot
         runcosts = []
         print("ASPIRATION CRITERIA")
         for i in range(20):
@@ -192,6 +200,7 @@ def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
         plt.show()   
 
     elif experiment =='5':
+        #run the experiment 20 times and plot
         runcosts = []
         print("ASPIRATION/FREQUENCY CRITERIA")
         for i in range(20):
@@ -212,7 +221,7 @@ def select_experiment(distance_array, flow_array, tabu_list, tabu_tenure):
         
     
 tabu_list = [] # (cost, layout)
-tabu_tenure = 100
+tabu_tenure = 100 #tabu list size default is 100
 
 select_experiment(distance_array, flow_array, tabu_list, tabu_tenure)
 
