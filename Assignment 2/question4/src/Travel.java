@@ -3,12 +3,12 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Travel {
-    private ArrayList<City> travel = new ArrayList();
-    private ArrayList<City> previousTravel = new ArrayList();
+    private ArrayList<City> travelItinerary = new ArrayList();
+    private ArrayList<City> previousTravelItinerary = new ArrayList();
 
     public Travel(int numberOfCities) {
         for (int i = 0; i < numberOfCities; i++) {
-            travel.add(new City());
+            travelItinerary.add(new City());
         }
     }
 
@@ -54,47 +54,47 @@ public class Travel {
             new City("38", 7, 53, 10),
             new City("39", 7, 41, 2)
         };
-        travel.addAll(Arrays.asList(cities));
+        travelItinerary.addAll(Arrays.asList(cities));
     }
 
     public void generateCities() {
-        if (travel.isEmpty())
+        if (travelItinerary.isEmpty())
             new Travel();
-        Collections.shuffle(travel);
+        Collections.shuffle(travelItinerary);
     }
 
     public void swapCities() {
         int a = generateRandomIndex();
         int b = generateRandomIndex();
-        previousTravel = travel;
-        City cityA = travel.get(a);
-        City cityB = travel.get(b);
-        travel.set(a, cityB);
-        travel.set(b, cityA);
+        previousTravelItinerary = travelItinerary;
+        City cityA = travelItinerary.get(a);
+        City cityB = travelItinerary.get(b);
+        travelItinerary.set(a, cityB);
+        travelItinerary.set(b, cityA);
     }
 
     public void revertSwap() {
-        travel = previousTravel;
+        travelItinerary = previousTravelItinerary;
     }
 
     private int generateRandomIndex() {
-        return (int) (Math.random() * travel.size());
+        return (int) (Math.random() * travelItinerary.size());
     }
 
     public City getCity(int index) {
-        return travel.get(index);
+        return travelItinerary.get(index);
     }
 
     public int getDistance(City endingDepot, City... startingCity) {
         int distance = 0;
-        for (int index = 0; index < travel.size(); index++) {
+        for (int index = 0; index < travelItinerary.size(); index++) {
 
             //startingCity is only used once at the very beginning to start from the depot
             City starting = startingCity == null ? getCity(index) : startingCity[0];
             startingCity = null;
 
             City destination;
-            if (index + 1 < travel.size())
+            if (index + 1 < travelItinerary.size())
                 destination = getCity(index + 1);
             else
                 destination = endingDepot;
@@ -107,12 +107,12 @@ public class Travel {
     public int getTime(int speed, City endingDepot, City... startingDepot) throws Exception {
         int totalTime = 0;
 
-        for (int index = 0; index < travel.size(); index++) {
+        for (int index = 0; index < travelItinerary.size(); index++) {
             City starting = startingDepot == null ? getCity(index) : startingDepot[0];
             startingDepot = null;
 
             City destination;
-            if (index + 1 < travel.size())
+            if (index + 1 < travelItinerary.size())
                 destination = getCity(index + 1);
              else
                 destination = endingDepot;

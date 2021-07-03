@@ -29,7 +29,7 @@ public class SimulatedAnnealing {
                     System.out.println("----------found new best distance of: " + bestDistance + " at iteration #" + i);
 
                 // e^(delta E - t) , delta E = bestDistance - currentDistance
-                } else if (Math.exp((bestDistance - currentDistance) / temperature) < Math.random()) {
+                } else if (Math.exp((bestDistance - currentDistance) / temperature) < 1) {
                     currentSolution.revertSwap();
                 }
                 temperature *= coolingRate;
@@ -37,8 +37,8 @@ public class SimulatedAnnealing {
             } else
                 continue;
 
-            if (i % 50 == 0) {
-                System.out.println("Iteration #" + i + ", current temp: " + String.format("%.03f", temperature) + " current best distance of: " + bestDistance);
+            if (i % 100 == 0) {
+                System.out.println("Iteration #" + i + ", current temp: " + String.format("%.03f", temperature) + " current best distance(KM): " + bestDistance);
             }
         }
         return bestDistance;
