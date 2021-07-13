@@ -62,8 +62,15 @@ class Simulation:
             # crossover
             offspring = self.algo.crossover(selected_parents[0], selected_parents[1])
 
+            # mutation  
+            offspring = self.algo.mutation(offspring)
 
+            #calculate and set fitness score:
+            self.algo.fitness_of_chromosome(offspring)
+
+            new_population.append(offspring)
         
-        return self.population
+        self.population = new_population
 
+        return self.population
 

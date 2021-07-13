@@ -12,9 +12,9 @@ class GeneticAlgorithm:
         self.crossover_rate = self.config['crossover_rate']
         self.mutation_prob = self.config['mutation_probability']
 
-    def mutation(self, chromosome):
 
-        return chromosome
+    def chromosome_valid(self, c):
+        return c.kp >= self.config['kp_low'] and c.kp <= self.config['kp_high'] and c.td >= self.config['td_low'] and c.td <= self.config['td_high'] and c.ti >= self.config['ti_low'] and c.ti <= self.config['ti_high']
 
 
     # returns the fitness evaluted by 1/ise, where ise is calculated from the transfer function
@@ -72,12 +72,22 @@ class GeneticAlgorithm:
 
 
     def mutation(self, chromosome):
-        if random.uniform(0, 1) > self.mutation_prob:
-            return chromosome
+        # the mutation values have been adjusted according to the range of allowed KP, TD, and TI values
+        rand_num = random.uniform(0, 1) 
+        if rand_num < self.mutation_prob / 3:
+            chromosome.kp = round(chromosome.kp + random.uniform(-0.5, 0.5), 2)
 
-        
-           
-        pass
+        elif rand_num < self.mutation_prob * 2/3:
+            chromosome.td = round(chromosome.td + random.uniform(-0.7, 0.7), 2)
+
+        elif rand_num < self.mutation_prob:
+            chromosome.ti = round(chromosome.ti + random.uniform(-0.18, 0.18), 2)
+
+        # only return if curr mutated chromosome is valid
+        if self.chromosome_valid(chromosome):
+            return chromosome
+        else: 
+            return self.mutation(chromosome)
 
 
     # to normalize against the sum, list values will take on values in (0, 1)
