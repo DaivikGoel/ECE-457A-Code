@@ -10,6 +10,7 @@ class GeneticAlgorithm:
         self.config = config
         self.population_size = self.config['population_size']
         self.crossover_rate = self.config['crossover_rate']
+        self.mutation_prob = self.config['mutation_probability']
 
     def mutation(self, chromosome):
 
@@ -47,10 +48,35 @@ class GeneticAlgorithm:
         return None
         
 
-    def crossover(self, chromosome_1, chromosome_2):
-
+    def crossover(self, c1, c2):
+        # no crossover applied, one of the parent is returned:
         if random.uniform(0, 1) > self.crossover_rate:
-            return chromosome_1, chromosome_2
+            if random.uniform(0, 1) < 0.5:
+                return c1
+            else: 
+                return c2
+
+        rand = random.uniform(0, 1)
+        if rand < 1.0/6:
+            return Chromosome(c1.kp,c1.td, c2.ti)
+        elif rand < 2.0/6:
+            return Chromosome(c1.kp, c2.td, c1.ti)
+        elif rand < 3.0/6:
+            return Chromosome(c1.kp, c2.td, c2.ti)
+        elif rand < 4.0/6:
+            return Chromosome(c2.kp, c1.td, c1.ti)
+        elif rand < 5.0/6:
+            return Chromosome(c2.kp,c1.td, c2.ti)
+        else:
+            return Chromosome(c2.kp,c2.td, c1.ti)
+
+
+    def mutation(self, chromosome):
+        if random.uniform(0, 1) > self.mutation_prob:
+            return chromosome
+
+        
+           
         pass
 
 

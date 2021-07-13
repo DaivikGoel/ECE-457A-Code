@@ -60,7 +60,7 @@ class Simulation:
 
 
             # crossover
-            crossover_chromosome = self.algo.crossover(selected_parents[0], selected_parents[1])
+            offspring = self.algo.crossover(selected_parents[0], selected_parents[1])
 
 
         
