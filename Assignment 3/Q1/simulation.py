@@ -7,7 +7,7 @@ class Simulation:
 
     def __init__(self, config):
         self.config = config
-        self.algorithm = GeneticAlgorithm(self.config)
+        self.algo = GeneticAlgorithm(self.config)
         self.population_size = self.config['population_size']
         self.generate_initial_population()
 
@@ -36,19 +36,34 @@ class Simulation:
             if (chromosomeIndex % 10 == 0):
                 print(chromosomeIndex)
                 
-            self.fitness_values.append(self.fitness_of_chromosome(chromosomeIndex))
+            curr_chromosome = self.population[chromosomeIndex]
+            self.fitness_values.append(self.algo.fitness_of_chromosome(curr_chromosome))
+
 
         # TODO: generate a new population based on fitness values
+        for chromosomeIndex in range(self.population_size):
             
+            # Fitness Proportionate Selection:
+            selected_parents = []
+
+            while len(selected_parents) < 2:
+                if len(selected_parents) == 1:  
+                    parent_1 = selected_parents[0]
+                    parent_2 = self.algo.selection(self.fitness_values, self.population) 
+                    # in case we get the exact same parent back:
+                    if (parent_1 == parent_2):
+                        continue
+
+                result = self.algo.selection(self.fitness_values, self.population)
+                if result:
+                    selected_parents.append(result)
 
 
-    # returns the fitness evaluted by 1/ise, where ise is calculated from the transfer function
-    def fitness_of_chromosome(self, index):
-        # returns fitness function value for curr chromosome
+            # crossover
+            crossover_chromosome = self.algo.crossover(selected_parents[0], selected_parents[1])
 
-        curr_chromosome = self.population[index]
-        ise = PID.evaluate_transfer_fn(curr_chromosome.kp, curr_chromosome.ti, curr_chromosome.td)
-        f_score = 1/ise
 
-        curr_chromosome.fitness = f_score
-        return f_score
+        
+        return self.population
+
+
