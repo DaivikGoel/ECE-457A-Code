@@ -1,10 +1,9 @@
 #initial commit
 
 import random
-import math
 import numpy as np
 import matplotlib.pyplot as plt
-
+import math
 #cities array
 cities = [
     (1, 1150, 1760),(2, 630, 1660),(3, 40, 2090),(4, 750, 1100),(5, 750, 2030),(6, 1030, 2070),(7, 1650, 650),(8, 1490, 1630),(9, 790, 2260),(10, 710, 1310),(11, 840, 550),(12, 1170, 2300),(13, 970, 1340),(14, 510, 700),(15, 750, 900),(16, 1280, 1200),(17, 230, 590),(18, 460, 860),(19, 1040, 950),(20, 590, 1390),(21, 830, 1770),(22, 490, 500),(23, 1840, 1240),(24, 1260, 1500),(25, 1280, 790),(26, 490, 2130),(27, 1460, 1420),(28, 1260, 1910),(29, 360, 1980)
@@ -17,32 +16,41 @@ class Ant:
         self.city = source_node
         self.travelled = [source_node]
 
+#overall algorithim class
 def ACO (alpha, beta, base_ph, ant_pop, phermone_decay, state_transition, online_phermone, Q, iter):
+    #creates 2D matrix to hold pheromones
     phermones = [[base_ph for x in range(len(cities))] for y in range(len(cities))] 
+    #holds the cost per iteration
     cost_per_iteration = []
 
+    #iterations is a stopping criteria
     for i in range(iter):
+        #creates a random city for the ants to start from 
         source_node = cities[random.randint(0,28)]
         ants = []
 
-
+        #creates ants at the start city
         for x in range(ant_pop):
             ants.append(Ant(source_node))
         best_cost = math.inf
         best_ant = None
+        #goes through every ant created
         for ant in ants:
+            #ant goes through whole nodes
             while len(ant.travelled) != len(cities):
+                #selects new city based on selection criteria
                 select_next_city(ant, phermones, alpha, beta, state_transition)
             if online_phermone == True:
+                #updates phermones after ant has gone through all 
                 online_delayed_update(ant, Q, phermones)
             ant_total_cost = totalcost(ant.travelled)
 
             best_ant = ant if ant_total_cost < best_cost else best_ant
             best_cost = ant_total_cost if ant_total_cost < best_cost else best_cost 
-
+        #this is for offline case where only best ant updates pheromones
         if online_phermone == False:
             offline_update(best_ant, Q, phermones)
-
+        #evaporate pheromone after every iteration 
         evaporate_phermone(phermone_decay, phermones)
         cost_per_iteration.append(tuple([i, best_cost]))
     return cost_per_iteration
@@ -53,15 +61,16 @@ def ACO (alpha, beta, base_ph, ant_pop, phermone_decay, state_transition, online
 
 
 def select_next_city(ant, phermones, alpha, beta, state_transition):
-
+    #gets rid of all cities already explored
     possible_cities = list(set(ant.travelled) ^ set(cities))
-
+    #state transition control value, will switch accordingly
     if state_transition > random.uniform(0, 1):
         probability_based(possible_cities, phermones, ant, alpha, beta)
     else:
         phermone_based(possible_cities, phermones, ant)
 
 def probability_based(possible_cities, phermones, ant, alpha, beta):
+    #uses weighted probabilities to select the next city to go to. Tau is determined from formular in slides
     probabilities = []
     for city in possible_cities:
         probabilities.append(math.pow(phermones[ant.city[0] - 1][city[0]-1], alpha) / math.pow(euclidian_distance(ant.city, city), beta ))
@@ -71,6 +80,7 @@ def probability_based(possible_cities, phermones, ant, alpha, beta):
     ant.city = chosencity
 
 def phermone_based(possible_cities, phermones, ant):
+    #uses the highest pheromone value to determine next city to check out
     highest_phermone_value = 0
     highest_city = None
     for city in possible_cities:
@@ -81,14 +91,17 @@ def phermone_based(possible_cities, phermones, ant):
     ant.city = highest_city
 
 def euclidian_distance(origin, destination):
+    #does euclidian distance
     return math.sqrt(math.pow(origin[1] - destination[1], 2) + math.pow(origin[2] - destination[2], 2))
 
 def evaporate_phermone(phermone_decay, phermones):
+    #uses given decay and formula discussed in slides to evaporate pheromone
   for x in range(len(phermones)):
     for y in range(len(phermones[x])):
             phermones[x][y] *= (1-phermone_decay)
 
 def online_delayed_update(ant,Q, phermones):
+    #adds tau value(pheromone) to travelled edges based on the total cost
     tau = Q / totalcost(ant.travelled)
     for x in range(len(ant.travelled)-1):
         phermones[ant.travelled[x][0] - 1][ant.travelled[x+1][0]-1] +=  tau
@@ -96,18 +109,21 @@ def online_delayed_update(ant,Q, phermones):
         
 
 def offline_update(ant, Q, phermones):
+    #doest same thing as online but only for best ant
     tau = Q / totalcost(ant.travelled)
     for x in range(len(ant.travelled)-1):
         phermones[ant.travelled[x][0] - 1][ant.travelled[x+1][0]-1] +=  tau
         phermones[ant.travelled[x+1][0] - 1][ant.travelled[x][0]-1] +=  tau
 
 def totalcost(travelled):
+    #gets total cost of trip taken by ant
     cost = 0
     for i in range(len(travelled) - 1):
         cost += euclidian_distance(travelled[i], travelled[i+1])
     return cost
 
 def choose_part(part_chosen):
+    #choose which part you want. Below is base values. They are manipulated as needed for the part
     alpha, beta, base_ph, ant_pop, phermone_decay, state_transition, online_phermone, Q, iter = 1,1,1,10,0.4,0.5,True, 5000,200
     if part_chosen == '0':
         values = ACO(alpha, beta, base_ph, ant_pop, phermone_decay, state_transition, online_phermone, Q, iter)
