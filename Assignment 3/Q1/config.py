@@ -10,5 +10,5 @@ config = {
     'ti_low': 0.26,
     'ti_high': 2.37,
 
-    'num_generations': 6, #TODO: change back to 150
+    'num_generations': 150, #TODO: change back to 150
 }

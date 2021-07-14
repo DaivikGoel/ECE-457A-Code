@@ -33,14 +33,14 @@ class Simulation:
 
         # get fitness scores of curr population
         for chromosomeIndex in range(self.population_size):
-            if (chromosomeIndex % 10 == 0):
-                print(chromosomeIndex)
+            # if (chromosomeIndex % 10 == 0):
+            #     print(chromosomeIndex)
                 
             curr_chromosome = self.population[chromosomeIndex]
             self.fitness_values.append(self.algo.fitness_of_chromosome(curr_chromosome))
 
 
-        # TODO: generate a new population based on fitness values
+        # generate a new population based on fitness values
         for chromosomeIndex in range(self.population_size):
             
             # Fitness Proportionate Selection:

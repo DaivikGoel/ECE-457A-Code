@@ -73,21 +73,36 @@ class GeneticAlgorithm:
 
     def mutation(self, chromosome):
         # the mutation values have been adjusted according to the range of allowed KP, TD, and TI values
-        rand_num = random.uniform(0, 1) 
-        if rand_num < self.mutation_prob / 3:
-            chromosome.kp = round(chromosome.kp + random.uniform(-0.5, 0.5), 2)
+        if random.uniform(0, 1) > self.mutation_prob:
+            return chromosome
 
-        elif rand_num < self.mutation_prob * 2/3:
-            chromosome.td = round(chromosome.td + random.uniform(-0.7, 0.7), 2)
-
-        elif rand_num < self.mutation_prob:
-            chromosome.ti = round(chromosome.ti + random.uniform(-0.18, 0.18), 2)
+        chromosome = self.mutate(chromosome)
 
         # only return if curr mutated chromosome is valid
-        if self.chromosome_valid(chromosome):
-            return chromosome
-        else: 
-            return self.mutation(chromosome)
+        while not self.chromosome_valid(chromosome):
+            chromosome = self.mutate(chromosome)
+
+        return chromosome
+
+
+    def mutate(self, chromosome):
+        rand_num = random.uniform(0, 1) 
+        if rand_num < self.mutation_prob / 3:
+            chromosome.kp = round(chromosome.kp + random.uniform(-0.05, 0.05), 2)
+        if chromosome.kp < 0:
+            chromosome.kp = round(random.uniform(2, 8) + random.uniform(-0.05, 0.05), 2)
+
+        elif rand_num < self.mutation_prob * 2/3:
+            chromosome.td = round(chromosome.td + random.uniform(-0.07, 0.07), 2)
+        if chromosome.td < 0:
+            chromosome.td = round(random.uniform(1.05, 9.42) + random.uniform(-0.07, 0.07), 2)
+
+        elif rand_num < self.mutation_prob:
+            chromosome.ti = round(chromosome.ti + random.uniform(-0.018, 0.018), 2)
+        if chromosome.ti < 0:
+            chromosome.ti = round(random.uniform(0.26, 2.37) + random.uniform(-0.018, 0.018), 2)
+
+        return chromosome
 
 
     # to normalize against the sum, list values will take on values in (0, 1)
