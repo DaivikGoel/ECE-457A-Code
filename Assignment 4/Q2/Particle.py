@@ -22,8 +22,6 @@ class Particle():
         self.velocity = np.array([0,0])
 
 
-
     def update_posn(self):
         self.position = self.velocity + self.position
-
 
